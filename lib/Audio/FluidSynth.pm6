@@ -1,5 +1,6 @@
-unit module Audio::Fluid;
+unit module Audio::FluidSynth;
 
-sub locate is export {
-  return '/usr/lib/x86_64-linux-gnu/libfluidsynth.so.1.5.2';
-}
+use Audio::FluidSynth::AudioDriver;
+use Audio::FluidSynth::Sequencer;
+use Audio::FluidSynth::Settings;
+use Audio::FluidSynth::Synth;

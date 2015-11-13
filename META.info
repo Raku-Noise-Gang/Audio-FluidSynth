@@ -5,6 +5,7 @@
   "provides" : {
     "Audio::FluidSynth"              : "lib/Audio/FluidSynth.pm6",
     "Audio::FluidSynth::AudioDriver" : "lib/Audio/FluidSynth/AudioDriver.pm6",
+    "Audio::FluidSynth::Base"        : "lib/Audio/FluidSynth/Base.pm6",
     "Audio::FluidSynth::Sequencer"   : "lib/Audio/FluidSynth/Sequencer.pm6",
     "Audio::FluidSynth::Settings"    : "lib/Audio/FluidSynth/Settings.pm6",
     "Audio::FluidSynth::Synth"       : "lib/Audio/FluidSynth/Synth.pm6"
