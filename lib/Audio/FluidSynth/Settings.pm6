@@ -1,16 +1,16 @@
 use NativeCall;
-use FluidSynth::Base;
+use Audio::FluidSynth::Base;
 
 class Audio::FluidSynth::Settings is repr('CPointer') {
-  sub new_fluid_settings() returns FluidSettings is native(&lib) { * }
+  sub new_fluid_settings() returns Audio::FluidSynth::Settings is native(&lib) { * }
   method new() { new_fluid_settings() }
 
-  sub delete_fluid_settings(FluidSettings) is native(&lib) { * }
+  sub delete_fluid_settings(Audio::FluidSynth::Settings) is native(&lib) { * }
   method del() { delete_fluid_settings(self) }
 
-  sub fluid_settings_setstr(FluidSettings, Str, Str) is native(&lib) { * }
-  sub fluid_settings_setnum(FluidSettings, Str, num64) is native(&lib) { * }
-  sub fluid_settings_setint(FluidSettings, Str, int64) is native(&lib) { * }
+  sub fluid_settings_setstr(Audio::FluidSynth::Settings, Str, Str) is native(&lib) { * }
+  sub fluid_settings_setnum(Audio::FluidSynth::Settings, Str, num64) is native(&lib) { * }
+  sub fluid_settings_setint(Audio::FluidSynth::Settings, Str, int64) is native(&lib) { * }
   method set(Str:D $setting, Any $val) {
     explicitly-manage($setting);
     explicitly-manage($val) if $val.isa(Str);
