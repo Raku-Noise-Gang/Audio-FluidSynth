@@ -1,13 +1,14 @@
-use Audio::Fluid;
+use lib 'lib';
+use Audio::FluidSynth;
 
 say "Creating settings...";
-my $settings = FluidSettings.new();
+my $settings = Audio::FluidSynth::Settings.new();
 say "Creating synth...";
-my $synth = FluidSynth.new($settings);
+my $synth = Audio::FluidSynth::Synth.new($settings);
 say "Setting audio driver to pulseaudio...";
 $settings.set("audio.driver", "pulseaudio");
 say "Creating audio driver...";
-my $adriver = FluidAudioDriver.new($settings, $synth);
+my $adriver = Audio::FluidSynth::AudioDriver.new($settings, $synth);
 
 say "Loading soundfont";
 $synth.sfload("/usr/share/sounds/sf2/FluidR3_GM.sf2", True);

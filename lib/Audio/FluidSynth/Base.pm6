@@ -1,14 +1,23 @@
 unit module Audio::FluidSynth::Base;
 
 our sub lib() is export {
-  given $*DISTRO {
+  state $path;
+  return $path if $path.defined;
+  given $*KERNEL {
     when "linux" {
       my $name = 'libfluidsynth';
       my $ext = 'so';
-      my @libs = ["/usr/lib/x86_64-linux-gnu/", "/usr/lib/", "/usr/local/lib/"];
+      my @libs = [
+        "/usr/lib/x86_64-linux-gnu/",
+        "/usr/lib/",
+        "/usr/local/lib/"
+      ];
       for @libs -> $lib {
-        my $path = "$lib$name.$ext";
-        if $path.IO.e { succeed $path }
+        my $pos-path = "$lib$name.$ext";
+        if $pos-path.IO.e {
+          $path = $pos-path;
+          succeed $path;
+        }
       }
       proceed;
     }
