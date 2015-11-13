@@ -1,13 +1,13 @@
 {
-  "name" : "Audio::Fluid",
+  "name" : "Audio::FluidSynth",
   "tags" : [ "audio", "midi", "synthesizer", "synth", "music"],
   "author" : "Jake Russo <madcap.russo+p6fluidsynth@gmail.com>",
   "provides" : {
-    "Audio::Fluid"              : "lib/Audio/Fluid.pm6",
-    "Audio::Fluid::AudioDriver" : "lib/Audio/Fluid/AudioDriver.pm6",
-    "Audio::Fluid::Sequencer"   : "lib/Audio/Fluid/Sequencer.pm6",
-    "Audio::Fluid::Settings"    : "lib/Audio/Fluid/Settings.pm6",
-    "Audio::Fluid::Synth"       : "lib/Audio/Fluid/Synth.pm6"
+    "Audio::FluidSynth"              : "lib/Audio/FluidSynth.pm6",
+    "Audio::FluidSynth::AudioDriver" : "lib/Audio/FluidSynth/AudioDriver.pm6",
+    "Audio::FluidSynth::Sequencer"   : "lib/Audio/FluidSynth/Sequencer.pm6",
+    "Audio::FluidSynth::Settings"    : "lib/Audio/FluidSynth/Settings.pm6",
+    "Audio::FluidSynth::Synth"       : "lib/Audio/FluidSynth/Synth.pm6"
   },
   "depends" : [ ],
   "build-depends" : [
@@ -17,6 +17,6 @@
   "test-depends" : [
     "Test"
   ],
-  "description" : "FluidSynth wrapper",
+  "description" : "A wrapper for FluidSynth, a software synthesizer",
   "version" : "0.1.0",
 }
