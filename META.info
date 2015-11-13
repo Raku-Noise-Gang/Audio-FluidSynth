@@ -1,0 +1,22 @@
+{
+  "name" : "Audio::Fluid",
+  "tags" : [ "audio", "midi", "synthesizer", "synth", "music"],
+  "author" : "Jake Russo <madcap.russo+p6fluidsynth@gmail.com>",
+  "provides" : {
+    "Audio::Fluid"              : "lib/Audio/Fluid.pm6",
+    "Audio::Fluid::AudioDriver" : "lib/Audio/Fluid/AudioDriver.pm6",
+    "Audio::Fluid::Sequencer"   : "lib/Audio/Fluid/Sequencer.pm6",
+    "Audio::Fluid::Settings"    : "lib/Audio/Fluid/Settings.pm6",
+    "Audio::Fluid::Synth"       : "lib/Audio/Fluid/Synth.pm6"
+  },
+  "depends" : [ ],
+  "build-depends" : [
+    "panda",
+    "LibraryCheck"
+  ],
+  "test-depends" : [
+    "Test"
+  ],
+  "description" : "FluidSynth wrapper",
+  "version" : "0.0.1",
+}
