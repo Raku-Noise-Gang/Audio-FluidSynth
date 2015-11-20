@@ -31,5 +31,5 @@ say 'Done!';
 my @note-names = ["A0", "B0"]
   .append(([1, 2, 3, 4, 5, 6, 7] X~ <C D E F G A B>).map({ .flip }))
   .append("C8");
-# TODO: Add flats/sharps
-# TODO: Build hash with midi notes as values
+# #Usage:0 Add flats/sharps
+# #Usage:10 Build hash with midi notes as values

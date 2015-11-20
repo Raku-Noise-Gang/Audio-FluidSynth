@@ -21,7 +21,15 @@
   },
   "lists": [
     {
-      "name": "TODO",
+      "name": "API",
+      "hidden": false
+    },
+    {
+      "name": "Usage",
+      "hidden": false
+    },
+    {
+      "name": "Doing",
       "hidden": false
     }
   ],
