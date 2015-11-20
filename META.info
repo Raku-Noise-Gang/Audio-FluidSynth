@@ -10,6 +10,9 @@
     "Audio::FluidSynth::Settings"    : "lib/Audio/FluidSynth/Settings.pm6",
     "Audio::FluidSynth::Synth"       : "lib/Audio/FluidSynth/Synth.pm6"
   },
+  "support": {
+    "email": "madcap.russo+p6fluidsynth@gmail.com"
+  },
   "depends" : [ ],
   "build-depends" : [
     "panda",
