@@ -78,7 +78,7 @@ class Audio::FluidSynth::Synth is repr('CPointer') {
 
   # Get current MIDI controller value on a MIDI channel.
   sub fluid_synth_get_cc(Audio::FluidSynth::Synth, int64, int64, CArray[int64])
-    returns int64
+      returns int64
       is native(&lib)
       { * }
 
@@ -90,8 +90,20 @@ class Audio::FluidSynth::Synth is repr('CPointer') {
   #| fluid_synth_sysex (fluid_synth_t *synth, const char *data, int len, char *response, int *response_len, int *handled, int dryrun)
   #|
   #| Process a MIDI SYSEX (system exclusive) message.
+  sub fluid_synth_sysex(Audio::FluidSynth::Synth, Str:D, int64, Str:D, CArray[int64], CArray[int64], int64)
+      returns int64
+      is native(&lib)
+      { * }
 
-  # #API:360 sysex
+  #|DOING:0 x sysex 2015-11-20 2015-11-20
+  method sysex(Audio::FluidSynth::Synth $synth,
+               Str:D $data, int64 $len, Str:D $response,
+               CArray[int64] @response_len, CArray[int64] @handled,
+               int64 $dryrun) {
+    explicitly-manage($data);
+    fluid_synth_sysex($synth, $data, $len, $response, @response_len, @handled, $dryrun);
+  }
+
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_pitch_bend (fluid_synth_t *synth, int chan, int val)
@@ -141,7 +153,7 @@ class Audio::FluidSynth::Synth is repr('CPointer') {
   #|
   #| Set SoundFont ID on a MIDI channel.
 
-  # #API:330 sfont-select
+  # #API:350 sfont-select
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_program_select (fluid_synth_t *synth, int chan, unsigned int sfont_id, unsigned int bank_num, unsigned int preset_num)
@@ -184,7 +196,7 @@ class Audio::FluidSynth::Synth is repr('CPointer') {
   #|
   #| Send MIDI system reset command (big red 'panic' button), turns off notes and resets controllers.
 
-  # #API:370 system-reset
+  # #API:430 system-reset
 
   #| FLUIDSYNTH_API fluid_preset_t *
   #| fluid_synth_get_channel_preset (fluid_synth_t *synth, int chan)
@@ -198,14 +210,14 @@ class Audio::FluidSynth::Synth is repr('CPointer') {
   #|
   #| Create and start voices using a preset and a MIDI note on event.
 
-  # #API:340 start
+  # #API:370 start
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_stop (fluid_synth_t *synth, unsigned int id)
   #|
   #| Stop notes for a given note event voice ID.
 
-  # #API:350 stop
+  # #API:390 stop
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_sfload (fluid_synth_t *synth, const char *filename, int reset_presets)
@@ -549,48 +561,48 @@ class Audio::FluidSynth::Synth is repr('CPointer') {
   #|
   #| Synthesize floating point audio to audio buffers.
 
-  # #API:320 write-audio
+  # #API:330 write-audio
 
   #| FLUIDSYNTH_API void
   #| fluid_synth_add_sfloader (fluid_synth_t *synth, fluid_sfloader_t *loader)
   #|
   #| Add a SoundFont loader interface.
 
-  # #API:330 add-sfloader
+  # #API:340 add-sfloader
 
   #| FLUIDSYNTH_API fluid_voice_t *
   #| fluid_synth_alloc_voice (fluid_synth_t *synth, fluid_sample_t *sample, int channum, int key, int vel)
   #|
   #| Allocate a synthesis voice.
 
-  # #API:340 alloc-voice
+  # #API:360 alloc-voice
 
   #| FLUIDSYNTH_API void
   #| fluid_synth_start_voice (fluid_synth_t *synth, fluid_voice_t *voice)
   #|
   #| Activate a voice previously allocated with fluid_synth_alloc_voice().
 
-  # #API:350 start-voice
+  # #API:380 start-voice
 
   #| FLUIDSYNTH_API void
   #| fluid_synth_get_voicelist (fluid_synth_t *synth, fluid_voice_t *buf[], int bufsize, int ID)
   #|
   #| Get list of voices.
 
-  # #API:360 get-voices
+  # #API:400 get-voices
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_handle_midi_event (void *data, fluid_midi_event_t *event)
   #|
   #| Handle MIDI event from MIDI router, used as a callback function.
 
-  # #API:370 handle-midi-event
+  # #API:410 handle-midi-event
 
   #| FLUIDSYNTH_API void
   #| fluid_synth_set_midi_router (fluid_synth_t *synth, fluid_midi_router_t *router)
   #|
   #| Assign a MIDI router to a synth.
 
-  # #API:380 set-midi-router
+  # #API:440 set-midi-router
 
 }
