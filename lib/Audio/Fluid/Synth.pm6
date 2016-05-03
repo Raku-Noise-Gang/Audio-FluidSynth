@@ -67,15 +67,15 @@ class Audio::Fluid::Synth is repr('CPointer') {
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_noteoff (fluid_synth_t *synth, int chan, int key)
- 	#|
+  #|
   #| Send a note-off event to a Fluid object.
   sub fluid_synth_noteoff(Audio::Fluid::Synth, int64, int64)
       returns int64
       is native<fluidsynth>
       { * }
 
-  method note(int64 :$chan, int64 :$key, int64 :on($vel)) {
-    fluid_synth_noteon(self, $chan, $key, $vel) if $vel.defined;
+  method note(int64 :$chan, int64 :$key, int64 :at(:$vel)) {
+    return fluid_synth_noteon(self, $chan, $key, $vel) with $vel;
     fluid_synth_noteoff(self, $chan, $key)
   }
 
