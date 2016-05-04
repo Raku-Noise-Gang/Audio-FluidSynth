@@ -16,18 +16,18 @@ say "Creating audio driver...";
 my $adriver = Audio::Fluid::Driver.new($settings, $synth);
 
 say "Loading soundfont";
-$synth.sfload("/usr/share/sounds/sf2/FluidR3_GM.sf2", True);
+$synth.font-load("/usr/share/sounds/sf2/FluidR3_GM.sf2", True);
 
 for 60, 62, 64, 65, 67, 69, 71, 72 -> $key {
-  $synth.note:0chan:$key:100vel;
-  sleep 1;
-  $synth.note:0chan:$key;
+  $synth.note() :0chan :$key :100vel;
+  sleep 0.1;
+  $synth.note():0chan:$key;
 }
 
 say "Deleting audio driver...";
 $adriver.del();
 say "Deleting synth...";
-$synth.del();
+$synth.dispose();
 say "Deleting settings...";
 $settings.del();
 

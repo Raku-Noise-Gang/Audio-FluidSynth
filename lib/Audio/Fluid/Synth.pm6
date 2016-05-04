@@ -11,14 +11,19 @@ class Audio::Fluid::Channel is repr('CStruct') {
   has Str $reserved;
 }
 
-class Audio::Fluid::SFont is repr('CStruct') {
-  has Pointer[void] $data;
-  has uint $id;
+class SoundFont is repr('CStruct') {
+  has Pointer $data;            #= User defined data.
+  has uint64  $id;              #= SoundFont ID.
+  has Pointer $free;            #= Method to free a virtual SoundFont bank.
+  has Pointer $get-name;        #= Method to return the name of a virtual SoundFont.
+  has Pointer $get-preset;      #= Get a virtual SoundFont preset by bank and program numbers.
+  has Pointer $iteration-start; #= Start virtual SoundFont preset iteration method.
+  has Pointer $iteration-next;  #= Virtual SoundFont preset iteration function.
 }
 
 class Audio::Fluid::Preset is repr('CStruct') {
   has Pointer[void] $data;
-  has Audio::Fluid::SFont $sfont;
+  has SoundFont $sfont;
 }
 
 class Audio::Fluid::Synth is repr('CPointer') {
@@ -43,7 +48,7 @@ class Audio::Fluid::Synth is repr('CPointer') {
       is native<fluidsynth>
       { * }
 
-  method del() { delete_fluid_synth(self) }
+  method dispose { delete_fluid_synth(self) }
 
   #| FLUIDSYNTH_API fluid_settings_t *
   #| fluid_synth_get_settings (fluid_synth_t *synth)
@@ -54,7 +59,7 @@ class Audio::Fluid::Synth is repr('CPointer') {
       is native<fluidsynth>
       { * }
 
-  # #API:0 Add method version of ^
+  method settings { fluid_synth_get_settings(self) }
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_noteon (fluid_synth_t *synth, int chan, int key, int vel)
@@ -159,7 +164,7 @@ class Audio::Fluid::Synth is repr('CPointer') {
       is native<fluidsynth>
       { * }
 
-  # #API:220 pitch-bend
+  # #API:210 pitch-bend
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_program_change (fluid_synth_t *synth, int chan, int program)
@@ -170,7 +175,7 @@ class Audio::Fluid::Synth is repr('CPointer') {
       is native<fluidsynth>
       { * }
 
-  # #API:240 program-change
+  # #API:230 program-change
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_channel_pressure (fluid_synth_t *synth, int chan, int val)
@@ -181,7 +186,7 @@ class Audio::Fluid::Synth is repr('CPointer') {
       is native<fluidsynth>
       { * }
 
-  # #API:60 channel-pressure
+  # #API:50 channel-pressure
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_bank_select (fluid_synth_t *synth, int chan, unsigned int bank)
@@ -192,7 +197,7 @@ class Audio::Fluid::Synth is repr('CPointer') {
       is native<fluidsynth>
       { * }
 
-  # #API:30 bank-select
+  # #API:20 bank-select
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_sfont_select (fluid_synth_t *synth, int chan, unsigned int sfont_id)
@@ -203,7 +208,7 @@ class Audio::Fluid::Synth is repr('CPointer') {
       is native<fluidsynth>
       { * }
 
-  # #API:350 sfont-select
+  # #API:340 sfont-select
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_program_select (fluid_synth_t *synth, int chan, unsigned int sfont_id, unsigned int bank_num, unsigned int preset_num)
@@ -241,7 +246,7 @@ class Audio::Fluid::Synth is repr('CPointer') {
       is native<fluidsynth>
       { * }
 
-  # #API:260 program-select
+  # #API:250 program-select
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_get_channel_info (fluid_synth_t *synth, int chan, fluid_synth_channel_info_t *info)
@@ -252,7 +257,7 @@ class Audio::Fluid::Synth is repr('CPointer') {
       is native<fluidsynth>
       { * }
 
-  # #API:40 channel-info
+  # #API:30 channel-info
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_program_reset (fluid_synth_t *synth)
@@ -263,7 +268,7 @@ class Audio::Fluid::Synth is repr('CPointer') {
       is native<fluidsynth>
       { * }
 
-  # #API:250 program-reset
+  # #API:240 program-reset
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_system_reset (fluid_synth_t *synth)
@@ -274,7 +279,7 @@ class Audio::Fluid::Synth is repr('CPointer') {
       is native<fluidsynth>
       { * }
 
-  # #API:430 system-reset
+  # #API:410 system-reset
 
   #| FLUIDSYNTH_API fluid_preset_t *
   #| fluid_synth_get_channel_preset (fluid_synth_t *synth, int chan)
@@ -285,7 +290,7 @@ class Audio::Fluid::Synth is repr('CPointer') {
       is native<fluidsynth>
       { * }
 
-  # #API:50 channel-preset
+  # #API:40 channel-preset
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_start (fluid_synth_t *synth, unsigned int id, fluid_preset_t *preset, int audio_chan, int midi_chan, int key, int vel)
@@ -296,7 +301,7 @@ class Audio::Fluid::Synth is repr('CPointer') {
       is native<fluidsynth>
       { * }
 
-  # #API:370 start
+  # #API:360 start
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_stop (fluid_synth_t *synth, unsigned int id)
@@ -307,18 +312,18 @@ class Audio::Fluid::Synth is repr('CPointer') {
       is native<fluidsynth>
       { * }
 
-  # #API:390 stop
+  # #API:380 stop
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_sfload (fluid_synth_t *synth, const char *filename, int reset_presets)
   #|
   #| Load a SoundFont file (filename is interpreted by SoundFont loaders).
   sub fluid_synth_sfload(Audio::Fluid::Synth, Str, int64)
-      returns int64
+      returns uint64 #= SoundFont ID on success, FLUID_FAILED on error
       is native<fluidsynth>
       { * }
 
-  method sfload(Str $filename, Bool $reset_presets) {
+  method font-load(Str $filename, Bool $reset_presets) {
     explicitly-manage($filename);
     fluid_synth_sfload(self, $filename, $reset_presets ?? 1 !! 0)
   }
@@ -327,36 +332,60 @@ class Audio::Fluid::Synth is repr('CPointer') {
   #| fluid_synth_sfreload (fluid_synth_t *synth, unsigned int id)
   #|
   #| Reload a SoundFont.
+  sub fluid_synth_sfreload(Audio::Fluid::Synth, uint64)
+      returns uint64 #= SoundFont ID on success, FLUID_FAILED on error
+      is native<fluidsynth>
+      { * }
 
-  # #API:150 font-reload
+  method font-reload(uint64 $id) { fluid_synth_sfreload(self, $id) }
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_sfunload (fluid_synth_t *synth, unsigned int id, int reset_presets)
   #|
   #| Unload a SoundFont.
+  sub fluid_synth_sfunload(Audio::Fluid::Synth, uint64, int64)
+      returns uint64 #= FLUID_OK on success, FLUID_FAILED on error
+      is native<fluidsynth>
+      { * }
 
-  # #API:180 font-unload
+  method font-unload(uint64(Int) $id, int64(Bool) $reset-presets) {
+    fluid_synth_sfunload(self, $id, $reset-presets)
+  }
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_add_sfont (fluid_synth_t *synth, fluid_sfont_t *sfont)
   #|
   #| Add a SoundFont.
 
-  # #API:10 add-font
+  sub fluid_synth_add_sfont(Audio::Fluid::Synth, SoundFont)
+      returns uint64 #= New assigned SoundFont ID or FLUID_FAILED on error
+      is native<fluidsynth>
+      { * }
+
+  method add-font(SoundFont $font) { fluid_synth_add_sfont(self, $font) }
 
   #| FLUIDSYNTH_API void
   #| fluid_synth_remove_sfont (fluid_synth_t *synth, fluid_sfont_t *sfont)
   #|
   #| Remove a SoundFont from the SoundFont stack without deleting it.
 
-  # #API:290 remove-font
+  sub fluid_synth_remove_sfont(Audio::Fluid::Synth, SoundFont)
+      is native<fluidsynth>
+      { * }
+
+  method remove-font(SoundFont $font) { fluid_synth_remove_sfont(self, $font) }
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_sfcount (fluid_synth_t *synth)
   #|
   #| Count number of loaded SoundFont files.
 
-  # #API:130 font-count
+  sub fluid_synth_sfcount(Audio::Fluid::Synth)
+      returns uint64
+      is native<fluidsynth>
+      { * }
+
+  method font-count { fluid_synth_sfcount(self) }
 
   #| FLUIDSYNTH_API fluid_sfont_t *
   #| fluid_synth_get_sfont (fluid_synth_t *synth, unsigned int num)
@@ -373,7 +402,7 @@ class Audio::Fluid::Synth is repr('CPointer') {
   #|
   #| Get SoundFont by name.
 
-  # #API:190 get-font
+  # #API:180 get-font
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_set_bank_offset (fluid_synth_t *synth, int sfont_id, int offset)
@@ -385,7 +414,7 @@ class Audio::Fluid::Synth is repr('CPointer') {
   #|
   #| Get bank offset of a loaded SoundFont.
 
-  # #API:20 bank-offset
+  # #API:10 bank-offset
 
   #| FLUIDSYNTH_API void
   #| fluid_synth_set_reverb (fluid_synth_t *synth, double roomsize, double damping, double width, double level)
@@ -417,7 +446,7 @@ class Audio::Fluid::Synth is repr('CPointer') {
   #|
   #| Get reverb width.
 
-  # #API:320 reverb (set, on, roomsize, damp, level, width)
+  # #API:310 reverb (set, on, roomsize, damp, level, width)
 
   #| FLUIDSYNTH_API void
   #| fluid_synth_set_chorus (fluid_synth_t *synth, int nr, double level, double speed, double depth_ms, int type)
@@ -454,42 +483,42 @@ class Audio::Fluid::Synth is repr('CPointer') {
   #|
   #| Get chorus waveform type.
 
-  # #API:70 chorus (set, on, nr, level, speed, depth, type)
+  # #API:60 chorus (set, on, nr, level, speed, depth, type)
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_count_midi_channels (fluid_synth_t *synth)
   #|
   #| Get the total count of MIDI channels.
 
-  # #API:110 count-midi-channels
+  # #API:100 count-midi-channels
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_count_audio_channels (fluid_synth_t *synth)
   #|
   #| Get the total count of audio channels.
 
-  # #API:80 count-audio-channels
+  # #API:70 count-audio-channels
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_count_audio_groups (fluid_synth_t *synth)
   #|
   #| Get the total number of allocated audio channels.
 
-  # #API:90 count-audio-groups
+  # #API:80 count-audio-groups
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_count_effects_channels (fluid_synth_t *synth)
   #|
   #| Get the total number of allocated effects channels.
 
-  # #API:100 count-effects-channels
+  # #API:90 count-effects-channels
 
   #| FLUIDSYNTH_API void
   #| fluid_synth_set_sample_rate (fluid_synth_t *synth, float sample_rate)
   #|
   #| Set sample rate of the synth.
 
-  # #API:120 sample-rate
+  # #API:110 sample-rate
 
   #| FLUIDSYNTH_API void
   #| fluid_synth_set_gain (fluid_synth_t *synth, float gain)
@@ -501,7 +530,7 @@ class Audio::Fluid::Synth is repr('CPointer') {
   #|
   #| Get synth output gain value.
 
-  # #API:140 gain
+  # #API:130 gain
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_set_polyphony (fluid_synth_t *synth, int polyphony)
@@ -513,28 +542,28 @@ class Audio::Fluid::Synth is repr('CPointer') {
   #|
   #| Get current synthesizer polyphony (max number of voices).
 
-  # #API:160 polyphony
+  # #API:150 polyphony
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_get_active_voice_count (fluid_synth_t *synth)
   #|
   #| Get current number of active voices.
 
-  # #API:170 active-voice-count
+  # #API:160 active-voice-count
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_get_internal_bufsize (fluid_synth_t *synth)
   #|
   #| Get the internal synthesis buffer size value.
 
-  # #API:200 internal-bufsize
+  # #API:190 internal-bufsize
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_set_interp_method (fluid_synth_t *synth, int chan, int interp_method)
   #|
   #| Set synthesis interpolation method on one or all MIDI channels.
 
-  # #API:210 interp-method
+  # #API:200 interp-method
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_set_gen (fluid_synth_t *synth, int chan, int param, float value)
@@ -551,7 +580,7 @@ class Audio::Fluid::Synth is repr('CPointer') {
   #|
   #| Get generator value assigned to a MIDI channel.
 
-  # #API:230 gen
+  # #API:220 gen
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_create_key_tuning (fluid_synth_t *synth, int bank, int prog, const char *name, const double *pitch)
@@ -578,7 +607,7 @@ class Audio::Fluid::Synth is repr('CPointer') {
   #|
   #| Set tuning values for one or more MIDI notes for an existing tuning.
 
-  # #API:300 tune-notes
+  # #API:290 tune-notes
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_select_tuning (fluid_synth_t *synth, int chan, int bank, int prog)
@@ -615,21 +644,21 @@ class Audio::Fluid::Synth is repr('CPointer') {
   #|
   #| Get the entire note tuning for a given MIDI bank and program.
 
-  # #API:270 tuning (key, octave, select, activate, deactivate, iteration-start, iteration-next, dump)
+  # #API:260 tuning (key, octave, select, activate, deactivate, iteration-start, iteration-next, dump)
 
   #| FLUIDSYNTH_API double
   #| fluid_synth_get_cpu_load (fluid_synth_t *synth)
   #|
   #| Get the synth CPU load value.
 
-  # #API:280 cpu-load
+  # #API:270 cpu-load
 
   #| FLUIDSYNTH_API char *
   #| fluid_synth_error (fluid_synth_t *synth)
   #|
   #| Get a textual representation of the last error.
 
-  # #API:310 error
+  # #API:300 error
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_write_s16 (fluid_synth_t *synth, int len, void *lout, int loff, int lincr, void *rout, int roff, int rincr)
@@ -651,48 +680,48 @@ class Audio::Fluid::Synth is repr('CPointer') {
   #|
   #| Synthesize floating point audio to audio buffers.
 
-  # #API:330 write-audio
+  # #API:320 write-audio
 
   #| FLUIDSYNTH_API void
   #| fluid_synth_add_sfloader (fluid_synth_t *synth, fluid_sfloader_t *loader)
   #|
   #| Add a SoundFont loader interface.
 
-  # #API:340 add-sfloader
+  # #API:330 add-sfloader
 
   #| FLUIDSYNTH_API fluid_voice_t *
   #| fluid_synth_alloc_voice (fluid_synth_t *synth, fluid_sample_t *sample, int channum, int key, int vel)
   #|
   #| Allocate a synthesis voice.
 
-  # #API:360 alloc-voice
+  # #API:350 alloc-voice
 
   #| FLUIDSYNTH_API void
   #| fluid_synth_start_voice (fluid_synth_t *synth, fluid_voice_t *voice)
   #|
   #| Activate a voice previously allocated with fluid_synth_alloc_voice().
 
-  # #API:380 start-voice
+  # #API:370 start-voice
 
   #| FLUIDSYNTH_API void
   #| fluid_synth_get_voicelist (fluid_synth_t *synth, fluid_voice_t *buf[], int bufsize, int ID)
   #|
   #| Get list of voices.
 
-  # #API:400 get-voices
+  # #API:390 get-voices
 
   #| FLUIDSYNTH_API int
   #| fluid_synth_handle_midi_event (void *data, fluid_midi_event_t *event)
   #|
   #| Handle MIDI event from MIDI router, used as a callback function.
 
-  # #API:410 handle-midi-event
+  # #API:400 handle-midi-event
 
   #| FLUIDSYNTH_API void
   #| fluid_synth_set_midi_router (fluid_synth_t *synth, fluid_midi_router_t *router)
   #|
   #| Assign a MIDI router to a synth.
 
-  # #API:440 set-midi-router
+  # #API:420 set-midi-router
 
 }
