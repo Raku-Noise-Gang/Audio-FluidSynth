@@ -1,0 +1,3 @@
+[submodule "vendor/fluidsynth"]
+	path = vendor/fluidsynth
+	url = https://github.com/quiasmo/fluidsynth.git
