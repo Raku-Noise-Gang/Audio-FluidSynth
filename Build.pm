@@ -18,7 +18,7 @@ method build($workdir) {
               "seq.h"; #,      "voice.h";
 }
 
-sub transpile($dest, $lib, *@headers) {
+sub transpile($workdir, *@headers) {
     my IO::Path $headers .= new: $workdir.child(join $*SPEC.dir-sep,
         |<vendor fluidsynth fluidsynth include>);
     my IO::Path $modules .= new: $workdir.child(join $*SPEC.dir-sep,
